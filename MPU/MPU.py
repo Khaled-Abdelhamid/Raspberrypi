@@ -1,6 +1,15 @@
 
 import smbus			#import SMBus module of I2C
 from time import sleep          #import
+import time
+import RPi.GPIO as GPIO
+
+
+GPIO.setmode(GPIO.BOARD)
+servo_pin = 18
+GPIO.setup(servo_pin,GPIO.OUT)
+pwm = GPIO.PWM(servo_pin,50)
+pwm.start(7)
 
 #some MPU6050 Registers and their Address
 PWR_MGMT_1   = 0x6B
@@ -41,8 +50,8 @@ def read_raw_data(addr):
         value = ((high << 8) | low)
         
         #to get signed value from mpu6050
-        if(value > 32768):
-                value = value - 65536
+        # if(value > 32768):
+        #         value = value - 65536
         return value
 
 
@@ -75,5 +84,38 @@ while True:
 	Gz = gyro_z/131.0
 	
 
-	print ("Gx=%.2f" %Gx, u'\u00b0'+ "/s", "\tGy=%.2f" %Gy, u'\u00b0'+ "/s", "\tGz=%.2f" %Gz, u'\u00b0'+ "/s", "\tAx=%.2f g" %Ax, "\tAy=%.2f g" %Ay, "\tAz=%.2f g" %Az) 	
+
+	print("Gx: " + str(Gx))
+	print("Gy: " + str(Gy))
+	print("Gz: " + str(Gz))
+	
+
+	print("*"*50)
+	print("\n")
+
 	sleep(1)
+
+
+
+
+
+	# for i in range(0,180):
+	# 	dc = (i/18) + 2
+	# 	pwm.ChangeDutyCycle(dc)
+	# 	time.sleep(0.05)
+
+	# for i in range(180,0,-1):
+	# 	dc = (i/18 )+ 2
+	# 	pwm.ChangeDutyCycle(dc)
+	# 	time.sleep(0.05)
+
+
+
+	# print ("Gx=%.2f" %Gx, u'\u00b0'+ "/s", "\tGy=%.2f" %Gy, u'\u00b0'+ "/s", "\tGz=%.2f" %Gz, u'\u00b0'+ "/s", "\tAx=%.2f g" %Ax, "\tAy=%.2f g" %Ay, "\tAz=%.2f g" %Az) 	
+
+
+
+
+pwm.stop()
+GPIO.cleanup()
+	
