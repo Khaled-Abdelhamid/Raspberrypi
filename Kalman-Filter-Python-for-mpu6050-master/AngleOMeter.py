@@ -14,7 +14,7 @@ import math
 kalmanX = KalmanAngle()
 kalmanY = KalmanAngle()
 
-RestrictPitch = True	#Comment out to restrict roll to ±90deg instead - please read: http://www.freescale.com/files/sensors/doc/app_note/AN3461.pdf
+RestrictPitch = False
 radToDeg = 57.2957786
 kalAngleX = 0
 kalAngleY = 0
@@ -163,8 +163,8 @@ while True:
 	    if ((gyroYAngle < -180) or (gyroYAngle > 180)):
 	        gyroYAngle = kalAngleY
 
-	    print("Angle X: " + str(kalAngleX)+"   " +"Angle Y: " + str(kalAngleY))
-	    #print(str(roll)+"  "+str(gyroXAngle)+"  "+str(compAngleX)+"  "+str(kalAngleX)+"  "+str(pitch)+"  "+str(gyroYAngle)+"  "+str(compAngleY)+"  "+str(kalAngleY))
+	    #print("Angle X: " + str(kalAngleX)+"   " +"Angle Y: " + str(kalAngleY))
+	    print(str(roll)+"  "+str(gyroXAngle)+"  "+str(compAngleX)+"  "+str(kalAngleX)+"  "+str(pitch)+"  "+str(gyroYAngle)+"  "+str(compAngleY)+"  "+str(kalAngleY))
 	    time.sleep(0.005)
 
 	except Exception as exc:
