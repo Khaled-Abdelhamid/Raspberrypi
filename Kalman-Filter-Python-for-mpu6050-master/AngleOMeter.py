@@ -10,6 +10,8 @@ from Kalman import KalmanAngle
 import smbus			#import SMBus module of I2C
 import time
 import math
+import RPi.GPIO as GPIO
+from time import sleep
 
 kalmanX = KalmanAngle()
 kalmanY = KalmanAngle()
@@ -64,6 +66,14 @@ def read_raw_data(addr):
                 value = value - 65536
         return value
 
+def SetAngle(angle):
+	duty = angle / 18 + 2
+	GPIO.output(22, True)
+	pwm.ChangeDutyCycle(duty)
+	sleep(1)
+	GPIO.output(22, False)
+	pwm.ChangeDutyCycle(0)
+
 
 bus = smbus.SMBus(1) 	# or bus = smbus.SMBus(0) for older version boards
 DeviceAddress = 0x68   # MPU6050 device address
@@ -75,6 +85,13 @@ time.sleep(1)
 accX = read_raw_data(ACCEL_XOUT_H)
 accY = read_raw_data(ACCEL_YOUT_H)
 accZ = read_raw_data(ACCEL_ZOUT_H)
+
+
+GPIO.setmode(GPIO.BOARD)
+GPIO.setup(22, GPIO.OUT)
+pwm=GPIO.PWM(22, 50)
+pwm.start(0)
+
 
 #print(accX,accY,accZ)
 #print(math.sqrt((accY**2)+(accZ**2)))
@@ -164,8 +181,12 @@ while True:
 	        gyroYAngle = kalAngleY
 
 	    print("Angle X: " + str(kalAngleX)+"   " +"Angle Y: " + str(kalAngleY))
+        if (kalAngleX<60):
+			SetAngle(kalAngleY)
 	    #print(str(roll)+"  "+str(gyroXAngle)+"  "+str(compAngleX)+"  "+str(kalAngleX)+"  "+str(pitch)+"  "+str(gyroYAngle)+"  "+str(compAngleY)+"  "+str(kalAngleY))
-	    time.sleep(0.005)
+        time.sleep(0.005)
+     except Exception as exc:
+         flag += 1
 
-	except Exception as exc:
-		flag += 1
+pwm.stop()
+GPIO.cleanup()
